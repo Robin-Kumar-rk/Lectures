@@ -17,8 +17,8 @@ import kotlin.let
 import kotlin.text.first
 import kotlin.toString
 
-private val selectedColor = Color(0xFFEC3939)
-private val buttonColor = Color(0xF3FFE893)
+val selectedColor = Color(0xFFEC3939)
+val buttonColor = Color(0xF3FFE893)
 
 @Composable
 fun Buttons(onOptionSelected: (String) -> Unit, selectedOption: String, currDay: String) {
@@ -56,21 +56,6 @@ fun Buttons(onOptionSelected: (String) -> Unit, selectedOption: String, currDay:
                     isSelected = selectedOption == currDay,
                     onClick = { onOptionSelected(currDay) }
                 )
-
-                // Next button with arrow
-                Button(
-                    onClick = { onOptionSelected(nextDay[selectedOption].toString()) },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (selectedOption == nextDay[selectedOption]) selectedColor else buttonColor,
-                        contentColor = MaterialTheme.colorScheme.onSecondary
-                    )
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = "Next Day",
-                        tint = Color.Black
-                    )
-                }
 
                 // Next day button
                 NavigationButton(
@@ -118,27 +103,17 @@ private fun NavigationButton(
 }
 
 @Composable
-fun SpecialButton(dayName: String) {
+fun SpecialDay(dayName: String) {
     Spacer(modifier = Modifier.padding(16.dp))
-    var text by remember { mutableStateOf(dayName) }
-    
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Button(
-            onClick = { text = if (text == dayName) "Moj" else dayName },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(R.color.button_default),
-                contentColor = colorResource(R.color.button_selection)
-            )
-        ) {
             Text(
-                text = text,
+                text = dayName,
                 style = MaterialTheme.typography.titleLarge,
-                color = Color(0xFF000000)
+                color = Color(0xFFFFFFFF)
             )
-        }
     }
 }

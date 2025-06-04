@@ -5,27 +5,33 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.lectures.data.TimetableData
+import com.example.lectures.data.TimetableManager
 import com.example.lectures.ui.theme.LecturesTheme
+import com.google.gson.Gson
 
 class MainActivity : ComponentActivity() {
     private lateinit var dateChangeReceiver: BroadcastReceiver
+    private lateinit var timetableManager: TimetableManager
     private val currentDateState = mutableStateOf(getCurrentDay())
+    private val currentTimetableState = mutableStateOf<TimetableData?>(null)
+    private val showPasteDialog = mutableStateOf(false)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        timetableManager = TimetableManager(this)
+        currentTimetableState.value = timetableManager.getCurrentTimetable()
 
         dateChangeReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -39,7 +45,27 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeView(currentDateState = currentDateState)
+                    HomeView(
+                        currentDateState = currentDateState,
+                        currentTimetable = currentTimetableState.value,
+                        onPasteTimetable = { showPasteDialog.value = true }
+                    )
+                    if (showPasteDialog.value) {
+                        PasteJsonDialog(
+                            onPaste = { json ->
+                                try {
+                                    val timetableData = Gson().fromJson(json, TimetableData::class.java)
+                                    timetableManager.saveTimetableFromData(timetableData)
+                                    currentTimetableState.value = timetableData
+                                    Toast.makeText(this, "Timetable updated!", Toast.LENGTH_SHORT).show()
+                                    showPasteDialog.value = false
+                                } catch (e: Exception) {
+                                    Toast.makeText(this, "Invalid JSON!", Toast.LENGTH_LONG).show()
+                                }
+                            },
+                            onDismiss = { showPasteDialog.value = false }
+                        )
+                    }
                 }
             }
         }
@@ -55,11 +81,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onStop() {
         super.onStop()
-        try {
-            unregisterReceiver(dateChangeReceiver)
-        } catch (e: Exception) {
-            // Ignore receiver not registered error
-        }
+        finishAffinity()
     }
 }
 
