@@ -3,19 +3,15 @@ package com.example.lectures
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import kotlin.collections.forEach
 import kotlin.let
 import kotlin.text.first
-import kotlin.toString
 
 val selectedColor = Color(0xFFEC3939)
 val buttonColor = Color(0xF3FFE893)
@@ -78,7 +74,6 @@ private fun DayButton(
         onClick = { onOptionSelected(day) },
         colors = ButtonDefaults.buttonColors(
             containerColor = if (selectedOption == day) selectedColor else buttonColor,
-            contentColor = MaterialTheme.colorScheme.onSecondary
         )
     ) {
         Text(day.first().toString(), color = Color.Black)
@@ -95,7 +90,6 @@ private fun NavigationButton(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = if (isSelected) selectedColor else buttonColor,
-            contentColor = MaterialTheme.colorScheme.onPrimary
         )
     ) {
         Text(text, color = Color.Black)

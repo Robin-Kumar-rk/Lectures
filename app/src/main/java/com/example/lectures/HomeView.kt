@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -37,8 +38,8 @@ fun HomeView(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onPasteTimetable,
-                containerColor = buttonColor,
-                contentColor = Color.Black
+                containerColor = buttonColor, contentColor = Color.Black,
+                shape = CircleShape
             ) {
                 Icon(Icons.Filled.Add, "Add")
             }
@@ -111,7 +112,7 @@ fun HomeView(
                                 period = lecture[0],
                                 subject = lecture[1],
                                 time = currentTimetable.timeSlots[lecture[2]] ?: lecture[2],
-                                subjectColor = currentTimetable.subjects[lecture[1]] ?: "0xFFFFFFFF"
+                                subjectColor = currentTimetable.getSubjectColor(lecture[1]) ?: "0xFFFFFFFF"
                             )
                         }
                     }
@@ -143,24 +144,44 @@ fun LectureCard(period: String, subject: String, time: String, subjectColor: Str
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = period,
-                textAlign = TextAlign.Center,
-                color = Color.Black,
-                fontWeight = FontWeight.W700
-            )
-            Text(
-                text = subject,
-                textAlign = TextAlign.Center,
-                color = Color.Black,
-                fontWeight = FontWeight.W700
-            )
-            Text(
-                text = time,
-                textAlign = TextAlign.Center,
-                color = Color.Black,
-                fontWeight = FontWeight.W700
-            )
+            Box(
+                modifier = Modifier
+                    .weight(0.25f)
+                    .fillMaxWidth(),
+
+            ) {
+                Text(
+                    text = period,
+                    textAlign = TextAlign.Start,
+                    color = Color.Black,
+                    fontWeight = FontWeight.W700
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .weight(0.75f)
+                    .fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = subject.uppercase(),
+                        textAlign = TextAlign.Start,
+                        color = Color.Black,
+                        fontWeight = FontWeight.W700
+                    )
+                    Text(
+                        text = time,
+                        textAlign = TextAlign.End,
+                        color = Color.Black,
+                        fontWeight = FontWeight.W700
+                    )
+                }
+            }
         }
     }
 }
