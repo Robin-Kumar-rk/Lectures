@@ -4,14 +4,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -19,6 +22,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun PasteJsonDialog(onPaste: (String) -> Unit, onDismiss: () -> Unit) {
     var text by remember { mutableStateOf("") }
+    val keyboardController = LocalSoftwareKeyboardController.current
     AlertDialog(
         onDismissRequest = onDismiss,
         containerColor = Color.Black,
@@ -39,7 +43,15 @@ fun PasteJsonDialog(onPaste: (String) -> Unit, onDismiss: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth(),
                 singleLine = false,
-                maxLines = 16
+                maxLines = 16,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        keyboardController?.hide()
+                    }
+                )
             )
         },
         confirmButton = {

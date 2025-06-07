@@ -104,10 +104,10 @@ fun SpecialDay(dayName: String) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-            Text(
-                text = dayName,
-                style = MaterialTheme.typography.titleLarge,
-                color = Color(0xFFFFFFFF)
-            )
+        Text(
+            text = dayName,
+            style = MaterialTheme.typography.titleLarge,
+            color = Color(0xFFFFFFFF)
+        )
     }
 }
